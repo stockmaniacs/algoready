@@ -1,41 +1,66 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
 import path from 'path';
+import fs from 'fs';
 
 export default defineConfig({
   plugins: [
     react(),
-    viteStaticCopy({
-      targets: [
-        {
-          src: 'manifest.json',
-          dest: '.',
-        },
-        {
-          src: 'public/icons',
-          dest: 'public',
-        },
-        {
-          src: 'public/styles.css',
-          dest: 'public',
-        },
-        {
-          src: 'public/overlay.css',
-          dest: 'public',
-        },
-        {
-          src: 'public/overlay.js',
-          dest: 'public',
-        },
-      ],
-    }),
+    {
+      name: 'copy-html-files',
+      writeBundle() {
+        const distDir = path.resolve(__dirname, 'dist');
+        
+        // Copy HTML files from src to dist root
+        const htmlFiles = ['popup.html', 'options.html', 'sidepanel.html'];
+        htmlFiles.forEach(file => {
+          const src = path.join(__dirname, 'src', file);
+          const dest = path.join(distDir, file);
+          if (fs.existsSync(src)) {
+            fs.copyFileSync(src, dest);
+          }
+        });
+        
+        // Copy manifest
+        fs.copyFileSync(
+          path.resolve(__dirname, 'manifest.json'),
+          path.join(distDir, 'manifest.json')
+        );
+        
+        // Copy icons
+        const iconsDir = path.join(distDir, 'public', 'icons');
+        fs.mkdirSync(iconsDir, { recursive: true });
+        ['icon-16.png', 'icon-32.png', 'icon-48.png', 'icon-128.png'].forEach(icon => {
+          const src = path.join(__dirname, 'public', 'icons', icon);
+          const dest = path.join(iconsDir, icon);
+          if (fs.existsSync(src)) {
+            fs.copyFileSync(src, dest);
+          }
+        });
+        
+        // Copy overlay files to dist root
+        ['overlay.css', 'overlay.js'].forEach(file => {
+          const src = path.join(__dirname, 'public', file);
+          const dest = path.join(distDir, file);
+          if (fs.existsSync(src)) {
+            fs.copyFileSync(src, dest);
+          }
+        });
+        
+        // Remove empty assets folder that vite creates
+        const assetsDir = path.join(distDir, 'assets');
+        if (fs.existsSync(assetsDir) && fs.readdirSync(assetsDir).length === 0) {
+          fs.rmdirSync(assetsDir);
+        }
+        
+        // Remove src folder from dist (it's not needed)
+        const srcDistDir = path.join(distDir, 'src');
+        if (fs.existsSync(srcDistDir)) {
+          fs.rmSync(srcDistDir, { recursive: true, force: true });
+        }
+      }
+    }
   ],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
   build: {
     outDir: 'dist',
     emptyOutDir: true,
@@ -54,21 +79,19 @@ export default defineConfig({
           if (chunkInfo.name === 'background') {
             return 'background.js';
           }
-          return 'assets/[name].js';
+          if (chunkInfo.name === 'content') {
+            return 'content.js';
+          }
+          if (chunkInfo.name === 'options') {
+            return 'options.js';
+          }
+          if (chunkInfo.name === 'sidepanel') {
+            return 'sidepanel.js';
+          }
+          return '[name].js';
         },
-        chunkFileNames: 'assets/[name].js',
-        assetFileNames: (assetInfo) => {
-          if (assetInfo.name === 'styles.css') {
-            return 'public/styles.css';
-          }
-          if (assetInfo.name === 'overlay.css') {
-            return 'public/overlay.css';
-          }
-          if (assetInfo.name === 'overlay.js') {
-            return 'public/overlay.js';
-          }
-          return 'assets/[name].[ext]';
-        },
+        chunkFileNames: '[name].js',
+        assetFileNames: '[name].[ext]',
       },
     },
   },
