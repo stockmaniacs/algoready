@@ -28,6 +28,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  
+  // Dist directory for build output
+  distDir: '.next',
 };
 
 module.exports = nextConfig;
