@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "AlgoReady Trading Extension",
+  "version": "1.0.0",
+  "description": "Your Brokers. Your Strategies. One Trading Workspace.",
+  "icons": {
+    "16": "public/icons/icon-16.png",
+    "32": "public/icons/icon-32.png",
+    "48": "public/icons/icon-48.png",
+    "128": "public/icons/icon-128.png"
+  },
+  "permissions": [
+    "activeTab",
+    "storage",
+    "notifications",
+    "alarms"
+  ],
+  "host_permissions": [
+    "https://api.algoready.dev/*",
+    "https://kite.trade/*",
+    "https://api.kite.trade/*",
+    "https://upstox.com/*",
+    "https://api.upstox.com/*",
+    "https://fyers.in/*",
+    "https://myapi.fyers.in/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "AlgoReady Trading",
+    "default_icon": {
+      "16": "public/icons/icon-16.png",
+      "32": "public/icons/icon-32.png"
+    }
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html",
+    "panels_enabled": true
+  },
+  "options_page": "options.html",
+  "web_accessible_resources": [
+    {
+      "resources": ["overlay.css", "overlay.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}

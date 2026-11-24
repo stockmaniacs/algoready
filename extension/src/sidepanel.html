@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlgoReady Side Panel</title>
+    <link rel="stylesheet" href="../public/styles.css">
+    <script type="module" src="sidepanel.js"></script>
+</head>
+<body>
+    <div class="sidepanel-container">
+        <header class="sidepanel-header">
+            <div class="logo">A</div>
+            <h1>AlgoReady</h1>
+        </header>
+        
+        <nav class="sidepanel-nav">
+            <button class="nav-item active" data-tab="dashboard">Dashboard</button>
+            <button class="nav-item" data-tab="positions">Positions</button>
+            <button class="nav-item" data-tab="orders">Orders</button>
+            <button class="nav-item" data-tab="strategies">Strategies</button>
+        </nav>
+        
+        <main id="sidepanel-content">
+            <div class="content-placeholder">
+                <h3>Welcome to AlgoReady</h3>
+                <p>Connect your broker accounts and start trading with structured strategies.</p>
+            </div>
+        </main>
+        
+        <footer class="sidepanel-footer">
+            <div class="version">v1.0.0</div>
+        </footer>
+    </div>
+</body>
+</html>
