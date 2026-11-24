@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Production settings for Cloudflare Pages
-  output: 'standalone',
+  output: 'export',
   compress: true,
   
   // Image optimization
@@ -28,9 +28,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  
-  // Dist directory for build output
-  distDir: '.next',
 };
 
 module.exports = nextConfig;
