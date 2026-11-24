@@ -10,8 +10,11 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'AlgoReady - Your Brokers. Your Strategies. One Trading Workspace.',
   description: 'Connect your broker accounts, apply pre-built trading strategies, and execute trades directly on your charts.',
-  themeColor: '#0f172a',
   keywords: 'trading, algo trading, broker integration, strategy, signals',
+};
+
+export const viewport = {
+  themeColor: '#0f172a',
 };
 
 export default function RootLayout({
