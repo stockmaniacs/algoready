@@ -1,0 +1,102 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: algoready-postgres
+    environment:
+      POSTGRES_USER: algoready
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-algoready_dev_password}
+      POSTGRES_DB: algoready
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U algoready -d algoready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: algoready-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: algoready-backend
+    environment:
+      DATABASE_URL: postgresql+asyncpg://algoready:${POSTGRES_PASSWORD:-algoready_dev_password}@postgres:5432/algoready
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:-dev_secret_key_change_in_production}
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 60
+      REFRESH_TOKEN_EXPIRE_DAYS: 30
+      CORS_ORIGINS: https://algoready.pages.dev,http://localhost:3000
+      ENVIRONMENT: development
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/__pycache__
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Frontend Web App
+  frontend:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: algoready-frontend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_WS_URL: ws://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+
+  # Chrome Extension (for building)
+  extension-builder:
+    build:
+      context: ./extension
+      dockerfile: Dockerfile
+    container_name: algoready-extension
+    volumes:
+      - ./extension:/app
+      - /app/node_modules
+      - /app/dist
+    command: npm run build
+    profiles:
+      - build
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  default:
+    name: algoready-network
