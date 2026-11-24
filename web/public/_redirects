@@ -1,0 +1,8 @@
+# Redirect www to non-www
+https://www.algoready.pages.dev/* https://algoready.pages.dev/:splat 301!
+
+# API routes
+/api/* https://api.algoready.dev/:splat 200
+
+# SPA fallback
+/* /index.html 200
