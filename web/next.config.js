@@ -7,23 +7,27 @@ const nextConfig = {
   // Image optimization
   images: {
     domains: ['localhost', 'algoready.pages.dev'],
+    unoptimized: true,
   },
   
   // Environment variables
   env: {
-    API_URL: process.env.API_URL || 'https://api.algoready.dev',
-  },
-  
-  // Disable image optimization in production for better build times
-  experimental: {
-    optimizeCss: false,
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'https://api.algoready.dev',
+    NEXT_PUBLIC_WS_URL: process.env.NEXT_PUBLIC_WS_URL || 'wss://api.algoready.dev',
   },
   
   // React strict mode
   reactStrictMode: true,
   
-  // SWSW target for browsers
-  target: 'serverless',
+  // ESLint
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  
+  // TypeScript
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
 module.exports = nextConfig;

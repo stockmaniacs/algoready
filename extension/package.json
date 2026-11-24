@@ -1,0 +1,30 @@
+{
+  "name": "algoready-extension",
+  "version": "1.0.0",
+  "description": "AlgoReady Chrome Extension - Your Brokers. Your Strategies. One Trading Workspace.",
+  "private": true,
+  "scripts": {
+    "dev": "vite build --watch --mode development",
+    "build": "vite build --mode production",
+    "preview": "vite preview",
+    "lint": "eslint src --ext ts,tsx,js,jsx",
+    "format": "prettier --write src/**/*.{ts,tsx,js,jsx,json,css,html}",
+    "zip": "cd dist && zip -r ../algoready-extension.zip ."
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.268",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.7",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.0",
+    "vite-plugin-static-copy": "^1.0.0"
+  }
+}
